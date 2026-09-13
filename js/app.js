@@ -7,3 +7,16 @@ import {
 import {
   renderCollectionView
 } from './views/collection.view.js'
+
+import {
+  createCollectionItem
+} from './api/collection.api.js'
+
+import {
+  setBackendStatus
+} from './components/statusIndicator.js'
+
+import {
+  createPokemonDisplay,
+  bindPokemonDisplayEvents
+} from './components/pokemonDisplay.js'
