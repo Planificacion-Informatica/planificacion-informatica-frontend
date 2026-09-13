@@ -14,17 +14,7 @@ const formatHeight = (height) => {
   return `${height / 10} m`
 }
 
-const createTypeChips = (types) => {
-  return types
-    .map(
-      (type) => `
-        <span class="type-chip type-chip--${type}">
-          ${translatePokemonType(type)}
-        </span>
-      `
-    )
-    .join('')
-}
+
 
 export const createPokemonDisplay = (
   pokemon,
