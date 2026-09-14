@@ -20,3 +20,13 @@ import {
   createPokemonDisplay,
   bindPokemonDisplayEvents
 } from './components/pokemonDisplay.js'
+
+import {
+  createLoading,
+  createErrorFeedback
+} from './components/feedback.js'
+
+import {
+  createCollectionForm,
+  createCollectionSuccess
+} from './components/collectionForm.js'
