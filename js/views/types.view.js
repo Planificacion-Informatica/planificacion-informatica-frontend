@@ -90,3 +90,123 @@ const createTypeChips = (types) => {
     </button>
   `
 }
+import {
+  getPokemonTypes,
+  getPokemonByType
+} from '../api/pokemon.api.js'
+
+import {
+  translatePokemonType
+} from '../utils/typeTranslations.js'
+
+import {
+  createPokemonCard
+} from '../components/pokemonCard.js'
+
+import {
+  createPagination
+} from '../components/pagination.js'
+
+import {
+  createLoading,
+  createErrorFeedback
+} from '../components/feedback.js'
+
+const PAGE_LIMIT = 20
+
+let selectedType = null
+let currentOffset = 0
+let cachedTypes = null
+
+const renderTypeSelector = (types) => {
+  return `
+    <section class="view">
+
+      <h2 class="view__title">
+        Seleccionar tipo
+      </h2>
+
+      <div class="type-filter">
+
+        <select
+          class="type-filter__select"
+          id="type-select"
+        >
+          <option value="">
+            Elegí un tipo
+          </option>
+
+          ${types
+            .map(
+              (type) => `
+                <option
+                  value="${type}"
+                  ${
+                    type === selectedType
+                      ? 'selected'
+                      : ''
+                  }
+                >
+                  ${translatePokemonType(type)}
+                </option>
+              `
+            )
+            .join('')}
+        </select>
+
+        <div class="type-filter__chips">
+          ${
+            selectedType
+              ? `
+                <span
+                  class="
+                    type-chip
+                    type-chip--${selectedType}
+                  "
+                >
+                  ${translatePokemonType(selectedType)}
+                </span>
+              `
+              : ''
+          }
+        </div>
+
+        <div id="type-results">
+          ${
+            selectedType
+              ? createLoading(
+                  `Cargando Pokémon ${selectedType}...`
+                )
+              : `
+                <p class="view__message">
+                  Seleccioná un tipo para ver Pokémon.
+                </p>
+              `
+          }
+        </div>
+
+      </div>
+
+    </section>
+  `
+}
+
+const bindPokemonCards = (
+  container,
+  onPokemonSelect
+) => {
+  const cards =
+    container.querySelectorAll('.pokemon-card')
+
+  cards.forEach((card) => {
+    card.addEventListener(
+      'click',
+      () => {
+        const pokemonId =
+          Number(card.dataset.pokemonId)
+
+        onPokemonSelect?.(pokemonId)
+      }
+    )
+  })
+}

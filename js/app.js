@@ -30,3 +30,28 @@ import {
   createCollectionForm,
   createCollectionSuccess
 } from './components/collectionForm.js'
+
+import {
+  renderHomeView
+} from './views/home.view.js'
+
+import {
+  renderTypesView
+} from './views/types.view.js'
+
+
+// ========================================
+// ELEMENTOS PRINCIPALES
+// ========================================
+
+const screenContent =
+  document.querySelector('#screen-content')
+
+const backendStatus =
+  document.querySelector('#backend-status')
+
+const searchForm =
+  document.querySelector('#search-form')
+
+const searchInput =
+  document.querySelector('#search-input')
