@@ -2,8 +2,8 @@ import { API_BASE_URL } from '../config.js'
 
 const request = async (endpoint) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`)
-}
- if (!response.ok) {
+
+  if (!response.ok) {
     let message = 'Ocurrió un error al comunicarse con el backend'
 
     try {
@@ -17,7 +17,20 @@ const request = async (endpoint) => {
       // conservamos el mensaje genérico.
     }
 
-       throw new Error(message)
+    throw new Error(message)
   }
 
   return response.json()
+}
+
+export const getRandomPokemon = async () => {
+  return request('/api/pokemon/random')
+}
+
+export const getPokemonByName = async (name) => {
+  const normalizedName = name.trim()
+
+  return request(
+    `/api/pokemon?name=${encodeURIComponent(normalizedName)}`
+  )
+}
