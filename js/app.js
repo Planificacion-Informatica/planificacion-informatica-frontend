@@ -55,3 +55,16 @@ const searchForm =
 
 const searchInput =
   document.querySelector('#search-input')
+  
+// ========================================
+// NAVEGACIÓN PRINCIPAL
+// ========================================
+
+const navHome =
+  document.querySelector('#nav-home')
+
+const navTypes =
+  document.querySelector('#nav-types')
+
+const navCollection =
+  document.querySelector('#nav-collection')

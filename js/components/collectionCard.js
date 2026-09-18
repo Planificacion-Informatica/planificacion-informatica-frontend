@@ -1,7 +1,7 @@
 import {
   translatePokemonType
 } from '../utils/typeTranslations.js'
-
+/* adri estaba aca y no sabia que hacer*/
 const createTypeChips = (types) => {
   return types
     .map(
