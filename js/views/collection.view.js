@@ -6,6 +6,13 @@ import {
 } from '../api/collection.api.js'
 
 import {
+  getCollection,
+  getCollectionItemById,
+  updateCollectionItem,
+  deleteCollectionItem
+} from '../api/collection.api.js'
+
+import {
   getPokemonById
 } from '../api/pokemon.api.js'
 
