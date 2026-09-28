@@ -71,3 +71,32 @@ export const createCollectionForm = (pokemon) => {
     </section>
   `
 }
+
+export const createCollectionSuccess = (item) => {
+  return `
+    <section class="feedback">
+
+      <div class="feedback__icon">
+        ✓
+      </div>
+
+      <h2 class="feedback__title">
+        Pokémon guardado
+      </h2>
+
+      <p class="feedback__message">
+        ${item.name}
+        fue agregado a la colección.
+      </p>
+
+      <button
+        class="screen-button"
+        id="collection-success-back"
+        type="button"
+      >
+        Volver
+      </button>
+
+    </section>
+  `
+}
