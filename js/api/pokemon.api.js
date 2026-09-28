@@ -34,3 +34,29 @@ export const getPokemonByName = async (name) => {
     `/api/pokemon?name=${encodeURIComponent(normalizedName)}`
   )
 }
+
+export const getPokemonById = async (id) => {
+  return request(`/api/pokemon/${id}`)
+}
+
+export const getPokemonByType = async (
+  type,
+  limit = 20,
+  offset = 0
+) => {
+  const params = new URLSearchParams({
+    type,
+    limit,
+    offset
+  })
+
+  return request(`/api/pokemon?${params.toString()}`)
+}
+
+export const getPokemonTypes = async () => {
+  return request('/api/types')
+}
+
+export const getBackendHealth = async () => {
+  return request('/api/health')
+}
