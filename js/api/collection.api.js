@@ -61,3 +61,24 @@ export const createCollectionItem = async ({
   )
 }
 
+export const updateCollectionItem = async (
+  id,
+  changes
+) => {
+  return request(
+    `/api/collection/${id}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(changes)
+    }
+  )
+}
+
+export const deleteCollectionItem = async (id) => {
+  return request(
+    `/api/collection/${id}`,
+    {
+      method: 'DELETE'
+    }
+  )
+}

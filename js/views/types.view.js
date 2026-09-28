@@ -1,95 +1,3 @@
-// Importamos la función que traduce los tipos de Pokémon 
-// // del inglés al español para mostrarlos en la interfaz. 
-import {
-  translatePokemonType
-} from '../utils/typeTranslations.js'
-
-// Formatea el ID del Pokémon utilizando siempre tres dígitos. 
-// // Ejemplos: 
-// // 1 -> #001 
-// // 25 -> #025 
-// // 150 -> #150 
-const formatPokemonId = (id) => {
-  return `#${String(id).padStart(3, '0')}`
-}
-
-
-// Genera los chips correspondientes a los tipos del Pokémon. 
-// // // Recibe un array de tipos, por ejemplo: 
-// // ['fire', 'flying'] 
-// // // Cada tipo se transforma en un elemento HTML 
-// // con una clase específica y su nombre traducido. 
-const createTypeChips = (types) => {
-  return types
-    .map(
-      (type) => `
-        <span class="type-chip type-chip--${type}">
-          ${translatePokemonType(type)}
-        </span>
-      `
-    )
-    .join('')
-}
-    // Une todos los chips generados 
-    // 
-    // en una única cadena de texto. .join('') } 
-    // 
-    // Genera y devuelve el HTML completo 
-    // 
-    // de una tarjeta individual de Pokémon. 
-    // 
-    // 
-    // El objeto pokemon debe contener: 
-    // 
-    // - id 
-    // 
-    // - name 
-    // 
-    // - image 
-    // 
-    // - types 
-    // 
-    // 
-    // La tarjeta guarda el ID del Pokémon en data-pokemon-id 
-    // 
-    // para poder identificarlo posteriormente desde JavaScript. 
-    // 
-    // 
-    // Si la imagen principal no puede cargarse, 
-    // 
-    // se utiliza una imagen placeholder como reemplazo. 
-   export const createPokemonCard = (pokemon) => {
-  return `
-    <button
-      class="pokemon-card"
-      type="button"
-      data-pokemon-id="${pokemon.id}"
-      aria-label="Ver detalles de ${pokemon.name}"
-    >
-      <img
-        class="pokemon-card__image"
-        src="${pokemon.image}"
-        alt="${pokemon.name}"
-        onerror="
-          this.onerror=null;
-          this.src='./assets/images/pokemon-placeholder.svg';
-        "
-      >
-
-      <span class="pokemon-card__id">
-        ${formatPokemonId(pokemon.id)}
-      </span>
-
-      <h3 class="pokemon-card__name">
-        ${pokemon.name}
-      </h3>
-
-      <div class="pokemon-display__types">
-        ${createTypeChips(pokemon.types)}
-      </div>
-    </button>
-  `
-}
 import {
   getPokemonTypes,
   getPokemonByType
@@ -209,4 +117,203 @@ const bindPokemonCards = (
       }
     )
   })
+}
+
+const renderPokemonResults = (
+  container,
+  response,
+  onPokemonSelect
+) => {
+  const {
+    results,
+    pagination
+  } = response
+
+  if (results.length === 0) {
+    container.innerHTML = `
+      <section class="feedback">
+
+        <div class="feedback__icon">
+          ?
+        </div>
+
+        <h2 class="feedback__title">
+          Sin resultados
+        </h2>
+
+        <p class="feedback__message">
+          No se encontraron Pokémon para este tipo.
+        </p>
+
+      </section>
+    `
+
+    return
+  }
+
+  container.innerHTML = `
+    <div class="pokemon-grid">
+      ${results
+        .map(createPokemonCard)
+        .join('')}
+    </div>
+
+    ${createPagination(pagination)}
+  `
+
+  bindPokemonCards(
+    container,
+    onPokemonSelect
+  )
+}
+
+const loadPokemonByType = async (
+  container,
+  type,
+  offset,
+  onPokemonSelect
+) => {
+  container.innerHTML =
+    createLoading(
+      `Cargando Pokémon ${type}...`
+    )
+
+  try {
+    const response =
+      await getPokemonByType(
+        type,
+        PAGE_LIMIT,
+        offset
+      )
+
+    renderPokemonResults(
+      container,
+      response,
+      onPokemonSelect
+    )
+
+    bindPaginationEvents(
+      container,
+      onPokemonSelect
+    )
+  } catch (error) {
+    container.innerHTML =
+      createErrorFeedback(error.message)
+  }
+}
+
+const bindPaginationEvents = (
+  container,
+  onPokemonSelect
+) => {
+  const previousButton =
+    container.querySelector(
+      '#pagination-previous'
+    )
+
+  const nextButton =
+    container.querySelector(
+      '#pagination-next'
+    )
+
+  previousButton?.addEventListener(
+    'click',
+    async () => {
+      currentOffset =
+        Math.max(
+          0,
+          currentOffset - PAGE_LIMIT
+        )
+
+      await loadPokemonByType(
+        container,
+        selectedType,
+        currentOffset,
+        onPokemonSelect
+      )
+    }
+  )
+
+  nextButton?.addEventListener(
+    'click',
+    async () => {
+      currentOffset += PAGE_LIMIT
+
+      await loadPokemonByType(
+        container,
+        selectedType,
+        currentOffset,
+        onPokemonSelect
+      )
+    }
+  )
+}
+
+export const renderTypesView = async (
+  container,
+  onPokemonSelect
+) => {
+  container.innerHTML =
+    createLoading(
+      'Cargando tipos...'
+    )
+
+  try {
+    if (!cachedTypes) {
+      cachedTypes =
+        await getPokemonTypes()
+    }
+
+    container.innerHTML =
+      renderTypeSelector(cachedTypes)
+
+    const typeSelect =
+      container.querySelector(
+        '#type-select'
+      )
+
+    const resultsContainer =
+      container.querySelector(
+        '#type-results'
+      )
+
+    if (selectedType) {
+      await loadPokemonByType(
+        resultsContainer,
+        selectedType,
+        currentOffset,
+        onPokemonSelect
+      )
+    }
+
+    typeSelect.addEventListener(
+      'change',
+      async (event) => {
+        selectedType =
+          event.target.value || null
+
+        currentOffset = 0
+
+        if (!selectedType) {
+          resultsContainer.innerHTML = `
+            <p class="view__message">
+              Seleccioná un tipo para ver Pokémon.
+            </p>
+          `
+
+          return
+        }
+
+        await loadPokemonByType(
+          resultsContainer,
+          selectedType,
+          currentOffset,
+          onPokemonSelect
+        )
+      }
+    )
+  } catch (error) {
+    container.innerHTML =
+      createErrorFeedback(error.message)
+  }
 }
