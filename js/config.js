@@ -4,4 +4,4 @@ const isLocalhost =
 
 export const API_BASE_URL = isLocalhost
   ? 'http://localhost:3000'
-  : 'https://backend-propio-pokeapi.onrender.com'
+  : 'https://planificacion-informatica-backend.onrender.com/'
